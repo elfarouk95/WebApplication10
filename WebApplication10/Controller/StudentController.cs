@@ -7,47 +7,149 @@ using WebApplication10.Model;
 
 namespace WebApplication10.Controller
 {
-    [Route("api/[controller]")]
+
     [ApiController]
+    [Route("Student")]
     public class StudentController : ControllerBase
     {
-        SchoolContext _context;
+
+        // Login , updateProfile ,  DeleteAccount
+
+        SchoolContext _Context;
         IMapper _mapper;
 
-        public StudentController(SchoolContext schoolContext, IMapper mapper)
+        public StudentController(SchoolContext context, IMapper mapper)
         {
-            _context = schoolContext;
+            _Context = context;
             _mapper = mapper;
         }
 
-        [HttpGet("GetALL")]
+
+        [HttpPost("AddImage")]
+        public ActionResult AddImage(IFormFile file)
+        {
+
+            return Ok("done");
+        }
+
+        [HttpGet("GetAll")]
         public ActionResult getAll()
         {
-            var lst = _context.Students.
-                Include(c => c.RegForm).
-                ThenInclude(c=>c.Items).ThenInclude(c=>c.Subject)
-                .ToList();
+            var lst = _Context.Students.
+                Include(c=>c.RegForm).
+                ThenInclude(s=>s.Items).
+                ThenInclude(r=>r.Subject).
+                ToList();
+
             return Ok(lst);
         }
 
 
-        [HttpPost("AddStudent")]
-        public ActionResult Add(StudentRegister s)
+        [HttpPost("Register")]
+        public ActionResult add(StudentRegister s)
         {
 
             Student st = _mapper.Map<Student>(s);
-/*
-            Student st = new Student
+
+            // mapping from StudentRegister to Student
+            //Student st = new Student
+            //{
+            //    Name = s.Name,
+            //    Email = s.Email,
+            //    Password = s.Password
+            //};
+
+            _Context.Students.Add(st);
+            _Context.SaveChanges();
+
+            return Ok("Done");
+        }
+
+
+
+        [HttpDelete("DeleteAccount")]
+        public ActionResult Del ([FromForm]int id)
+        {
+            // var student = _Context.Students.Find(id);
+            var student = _Context.Students.Where(c => c.Id == id).FirstOrDefault();
+
+            if (student == null)
             {
-                Name = s.Name,
-                Email = s.Email,
-                Password = s.Password
+                return BadRequest("no student with this id");
+            }
+
+            _Context.Students.Remove(student);
+            _Context.SaveChanges();
+
+            return Ok("done");
+
+        }
+
+
+        [HttpPut("UpdateProfile")]
+        public ActionResult UpdateProfile([FromQuery] int id , [FromForm] StudentRegister student)
+        {
+            var stu = _Context.Students.Find(id);
+
+            if (stu == null)
+            {
+                return BadRequest("no register student with this id");
+            }
+
+            Student s = new Student()
+            {
+                Id = id,
+                Name = student.Name ?? stu.Name,
+                Email = student.Email ?? stu.Email,
+                Password = student.Password ?? stu.Password
             };
-*/
-            _context.Students.Add(st);
-            _context.SaveChanges();
+
+            _Context.Students.Update(s);
+            _Context.SaveChanges();
 
             return Ok(s);
         }
+
+
+
+
+        [HttpPost("Login")] 
+        public ActionResult Login(StudentLogin l)
+        {
+            var student = _Context.Students.
+                Where(s => s.Email == l.Email && s.Password == l.Password).
+                FirstOrDefault();
+
+            if (student == null)
+            {
+                return Unauthorized("Invalid UserName or Password");
+            }
+
+            return Ok(student);
+        }
+
+
+
+
+        //[HttpPost("Register")]
+        //public ActionResult add(string name , string email , string pass)
+        //{
+
+        //  /////  Student st = _mapper.Map<Student>(s);
+
+        //  //  // mapping from StudentRegister to Student
+        //  //  //Student st = new Student
+        //  //  //{
+        //  //  //    Name = s.Name,
+        //  //  //    Email = s.Email,
+        //  //  //    Password = s.Password
+        //  //  //};
+
+        //  //  _Context.Students.Add(st);
+        //  //  _Context.SaveChanges();
+
+        //    return Ok("Done");
+        //}
+
     }
 }

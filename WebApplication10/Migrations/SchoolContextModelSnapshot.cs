@@ -34,8 +34,6 @@ namespace WebApplication10.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
-
                     b.ToTable("RegForms");
                 });
 
@@ -82,7 +80,9 @@ namespace WebApplication10.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RegFormId");
+                    b.HasIndex("RegFormId")
+                        .IsUnique()
+                        .HasFilter("[RegFormId] IS NOT NULL");
 
                     b.ToTable("Students");
                 });
@@ -100,17 +100,6 @@ namespace WebApplication10.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Subjects");
-                });
-
-            modelBuilder.Entity("WebApplication10.Model.RegForm", b =>
-                {
-                    b.HasOne("WebApplication10.Model.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("WebApplication10.Model.RegFormItem", b =>
@@ -135,8 +124,8 @@ namespace WebApplication10.Migrations
             modelBuilder.Entity("WebApplication10.Model.Student", b =>
                 {
                     b.HasOne("WebApplication10.Model.RegForm", "RegForm")
-                        .WithMany()
-                        .HasForeignKey("RegFormId");
+                        .WithOne("Student")
+                        .HasForeignKey("WebApplication10.Model.Student", "RegFormId");
 
                     b.Navigation("RegForm");
                 });
@@ -144,6 +133,8 @@ namespace WebApplication10.Migrations
             modelBuilder.Entity("WebApplication10.Model.RegForm", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("WebApplication10.Model.Subject", b =>

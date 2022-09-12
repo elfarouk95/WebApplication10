@@ -6,7 +6,6 @@ namespace WebApplication10.Model
     {
         public int Id { get; set; }
 
-     
         public int SubjectId { get; set; }
         public Subject Subject { get; set; }
 

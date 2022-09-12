@@ -1,37 +1,35 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication10.Model;
 
 namespace WebApplication10.Controller
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("Subject")]
     public class SubjectController : ControllerBase
     {
-        SchoolContext _context;
+        SchoolContext _Context;
         IMapper _mapper;
 
-        public SubjectController(SchoolContext schoolContext, IMapper mapper)
+        public SubjectController(SchoolContext context, IMapper mapper)
         {
-            _context = schoolContext;
+            _Context = context;
             _mapper = mapper;
         }
 
-        [HttpPost("AddSubject")]
-        public ActionResult Add(string SubjectName)
+        [HttpPost("Add")]
+        public ActionResult add(string SubjectName)
         {
-
             Subject s = new Subject
             {
                 Name = SubjectName
             };
-  
-            _context.Subjects.Add(s);
-            _context.SaveChanges();
 
-            return Ok(s);
+            _Context.Subjects.Add(s);
+            _Context.SaveChanges();
+
+         
+            return Ok(s.Id);
         }
     }
-
 }

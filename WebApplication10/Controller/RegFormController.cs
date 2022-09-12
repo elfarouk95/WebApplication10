@@ -1,52 +1,46 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using WebApplication10.Model;
 
 namespace WebApplication10.Controller
 {
-    [Route("api/[controller]")]
+
     [ApiController]
+    [Route("RegForm")]
     public class RegFormController : ControllerBase
     {
-        SchoolContext _context;
+        SchoolContext _Context;
         IMapper _mapper;
 
-        public RegFormController(SchoolContext schoolContext, IMapper mapper)
+        public RegFormController(SchoolContext context, IMapper mapper)
         {
-            _context = schoolContext;
+            _Context = context;
             _mapper = mapper;
         }
 
-
-        [HttpPost("Add")]
-        public ActionResult add(RegFormDTO r)
+        [HttpPost("AddForm")]
+        public ActionResult RegisterSubject(RegData data)
         {
 
-            RegForm obj = new RegForm();
+            RegForm form = new RegForm();
+            form.StudentId = data.StudentId;
+            form.Date = DateTime.Now;
 
-            obj.StudentId = r.StudentID;
-            obj.Date = DateTime.Now;
+            _Context.RegForms.Add(form);
+            _Context.SaveChanges();
 
-            _context.RegForms.Add(obj);
-            _context.SaveChanges();
-
-
-
-            obj.Items = new List<RegFormItem>();
-
-
-            for (int i = 0; i < r.SubjectsIds.Count; i++)
+            foreach (var subId in data.SubjectIds)
             {
-                RegFormItem f = new RegFormItem();
-                f.SubjectId = r.SubjectsIds[i];
-                f.RegFormId = obj.Id;
+                RegFormItem item = new RegFormItem();
+                item.SubjectId = subId;
+                item.RegFormId = form.Id;
 
-                _context.RegFormItems.Add(f);
+                _Context.RegFormItems.Add(item);
             }
 
-            _context.SaveChanges();
+            _Context.SaveChanges();
+
 
             return Ok("done");
 

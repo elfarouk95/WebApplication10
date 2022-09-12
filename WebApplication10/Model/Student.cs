@@ -8,6 +8,7 @@ namespace WebApplication10.Model
         public string Email { get; set; }
         public string Password { get; set; }
     }
+
     public class StudentRegister
     {
         public string Name { get; set; }
@@ -20,8 +21,9 @@ namespace WebApplication10.Model
 
         public string Name { get; set; }
         public string Email { get; set; }
-        [JsonIgnore]
         public string Password { get; set; }
+
+
 
         public int? RegFormId { get; set; }
         [ForeignKey("RegFormId")]

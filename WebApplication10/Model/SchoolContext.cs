@@ -15,7 +15,7 @@ namespace WebApplication10.Model
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server = DESKTOP-60PFG0M\MSSQLSERVER01;
-Database = SchoolDb5;
+Database = SchoolDb6;
 trusted_connection = true;");
         }
     }
