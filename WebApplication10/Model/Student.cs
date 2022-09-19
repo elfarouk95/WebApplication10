@@ -14,6 +14,8 @@ namespace WebApplication10.Model
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string ImagePath { get; set; }
+
     }
     public class Student 
     {
@@ -23,7 +25,7 @@ namespace WebApplication10.Model
         public string Email { get; set; }
         public string Password { get; set; }
 
-
+        public string ImagePath { get; set; }
 
         public int? RegFormId { get; set; }
         [ForeignKey("RegFormId")]
